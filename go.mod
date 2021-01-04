@@ -3,7 +3,7 @@ module github.com/VulpesFerrilata/grpc
 go 1.14
 
 require (
-	github.com/VulpesFerrilata/library v0.0.0-20210104045352-67840ee53189
+	github.com/VulpesFerrilata/library v0.0.0-20210104081132-575359acfffd
 	github.com/ajg/form v1.5.1 // indirect
 	github.com/fasthttp-contrib/websocket v0.0.0-20160511215533-1f3b11f56072 // indirect
 	github.com/go-playground/pure/v5 v5.1.0 // indirect
