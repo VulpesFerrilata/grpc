@@ -1,10 +1,10 @@
 package service
 
 import (
+	"github.com/VulpesFerrilata/go-micro-custom/client/grpc"
 	"github.com/VulpesFerrilata/grpc/protoc/auth"
 	"github.com/micro/go-micro/v2"
 	"github.com/micro/go-micro/v2/client"
-	"github.com/micro/go-micro/v2/client/grpc"
 )
 
 func NewAuthService(opts ...client.Option) auth.AuthService {
