@@ -10,7 +10,7 @@ service User {
 }
 
 message UserRequest {
-    int64 ID = 1;
+    string ID = 1;
 }
 
 message CredentialRequest {
@@ -19,5 +19,8 @@ message CredentialRequest {
 }
 
 message UserResponse {
-    int64 ID = 1;
+    string ID = 1;
+    string Username = 2;
+    string DisplayName = 3;
+    string Email = 4;
 }

@@ -13,5 +13,5 @@ message TokenRequest {
 }
 
 message ClaimResponse {
-    int64 UserID = 1;
+    string UserID = 1;
 }
