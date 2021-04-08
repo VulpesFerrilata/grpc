@@ -1,4 +1,4 @@
-package service
+package gateway
 
 import (
 	"github.com/VulpesFerrilata/grpc/protoc/auth"
@@ -6,7 +6,11 @@ import (
 	"github.com/asim/go-micro/v3/client"
 )
 
-func NewAuthService(opts ...client.Option) auth.AuthService {
+type AuthGateway interface {
+	auth.AuthService
+}
+
+func NewAuthGateway(opts ...client.Option) AuthGateway {
 	service := micro.NewService(
 		micro.Name("boardgame.auth.svc.client"),
 		micro.Version("latest"),
