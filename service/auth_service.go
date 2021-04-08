@@ -1,10 +1,9 @@
 package service
 
 import (
-	"github.com/VulpesFerrilata/go-micro-custom/client/grpc"
 	"github.com/VulpesFerrilata/grpc/protoc/auth"
-	"github.com/micro/go-micro/v2"
-	"github.com/micro/go-micro/v2/client"
+	"github.com/asim/go-micro/v3"
+	"github.com/asim/go-micro/v3/client"
 )
 
 func NewAuthService(opts ...client.Option) auth.AuthService {
@@ -12,7 +11,7 @@ func NewAuthService(opts ...client.Option) auth.AuthService {
 		micro.Name("boardgame.auth.svc.client"),
 		micro.Version("latest"),
 		micro.Client(
-			grpc.NewClient(
+			client.NewClient(
 				opts...,
 			),
 		),
