@@ -8,14 +8,14 @@ package auth;
 
 service Auth {
     rpc CreateUserCredential(UserCredentialRequest) returns (google.protobuf.Empty) {}
-    rpc Authenticate(TokenRequest) returns (UserCredentialResponse) {}
+    rpc Authenticate(TokenRequest) returns (ClaimResponse) {}
 }
 
 message TokenRequest {
     string Token = 1;
 }
 
-message UserCredentialResponse {
+message ClaimResponse {
     string ID = 1;
 }
 

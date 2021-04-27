@@ -44,7 +44,7 @@ func NewAuthEndpoints() []*api.Endpoint {
 
 type AuthService interface {
 	CreateUserCredential(ctx context.Context, in *UserCredentialRequest, opts ...client.CallOption) (*empty.Empty, error)
-	Authenticate(ctx context.Context, in *TokenRequest, opts ...client.CallOption) (*UserCredentialResponse, error)
+	Authenticate(ctx context.Context, in *TokenRequest, opts ...client.CallOption) (*ClaimResponse, error)
 }
 
 type authService struct {
@@ -69,9 +69,9 @@ func (c *authService) CreateUserCredential(ctx context.Context, in *UserCredenti
 	return out, nil
 }
 
-func (c *authService) Authenticate(ctx context.Context, in *TokenRequest, opts ...client.CallOption) (*UserCredentialResponse, error) {
+func (c *authService) Authenticate(ctx context.Context, in *TokenRequest, opts ...client.CallOption) (*ClaimResponse, error) {
 	req := c.c.NewRequest(c.name, "Auth.Authenticate", in)
-	out := new(UserCredentialResponse)
+	out := new(ClaimResponse)
 	err := c.c.Call(ctx, req, out, opts...)
 	if err != nil {
 		return nil, err
@@ -83,13 +83,13 @@ func (c *authService) Authenticate(ctx context.Context, in *TokenRequest, opts .
 
 type AuthHandler interface {
 	CreateUserCredential(context.Context, *UserCredentialRequest, *empty.Empty) error
-	Authenticate(context.Context, *TokenRequest, *UserCredentialResponse) error
+	Authenticate(context.Context, *TokenRequest, *ClaimResponse) error
 }
 
 func RegisterAuthHandler(s server.Server, hdlr AuthHandler, opts ...server.HandlerOption) error {
 	type auth interface {
 		CreateUserCredential(ctx context.Context, in *UserCredentialRequest, out *empty.Empty) error
-		Authenticate(ctx context.Context, in *TokenRequest, out *UserCredentialResponse) error
+		Authenticate(ctx context.Context, in *TokenRequest, out *ClaimResponse) error
 	}
 	type Auth struct {
 		auth
@@ -106,6 +106,6 @@ func (h *authHandler) CreateUserCredential(ctx context.Context, in *UserCredenti
 	return h.AuthHandler.CreateUserCredential(ctx, in, out)
 }
 
-func (h *authHandler) Authenticate(ctx context.Context, in *TokenRequest, out *UserCredentialResponse) error {
+func (h *authHandler) Authenticate(ctx context.Context, in *TokenRequest, out *ClaimResponse) error {
 	return h.AuthHandler.Authenticate(ctx, in, out)
 }
