@@ -6,6 +6,7 @@ package auth
 import (
 	fmt "fmt"
 	proto "github.com/golang/protobuf/proto"
+	empty "github.com/golang/protobuf/ptypes/empty"
 	math "math"
 )
 
@@ -42,7 +43,7 @@ func NewAuthEndpoints() []*api.Endpoint {
 // Client API for Auth service
 
 type AuthService interface {
-	CreateUserCredential(ctx context.Context, in *UserCredentialRequest, opts ...client.CallOption) (*UserCredentialResponse, error)
+	CreateUserCredential(ctx context.Context, in *UserCredentialRequest, opts ...client.CallOption) (*empty.Empty, error)
 	Authenticate(ctx context.Context, in *TokenRequest, opts ...client.CallOption) (*UserCredentialResponse, error)
 }
 
@@ -58,9 +59,9 @@ func NewAuthService(name string, c client.Client) AuthService {
 	}
 }
 
-func (c *authService) CreateUserCredential(ctx context.Context, in *UserCredentialRequest, opts ...client.CallOption) (*UserCredentialResponse, error) {
+func (c *authService) CreateUserCredential(ctx context.Context, in *UserCredentialRequest, opts ...client.CallOption) (*empty.Empty, error) {
 	req := c.c.NewRequest(c.name, "Auth.CreateUserCredential", in)
-	out := new(UserCredentialResponse)
+	out := new(empty.Empty)
 	err := c.c.Call(ctx, req, out, opts...)
 	if err != nil {
 		return nil, err
@@ -81,13 +82,13 @@ func (c *authService) Authenticate(ctx context.Context, in *TokenRequest, opts .
 // Server API for Auth service
 
 type AuthHandler interface {
-	CreateUserCredential(context.Context, *UserCredentialRequest, *UserCredentialResponse) error
+	CreateUserCredential(context.Context, *UserCredentialRequest, *empty.Empty) error
 	Authenticate(context.Context, *TokenRequest, *UserCredentialResponse) error
 }
 
 func RegisterAuthHandler(s server.Server, hdlr AuthHandler, opts ...server.HandlerOption) error {
 	type auth interface {
-		CreateUserCredential(ctx context.Context, in *UserCredentialRequest, out *UserCredentialResponse) error
+		CreateUserCredential(ctx context.Context, in *UserCredentialRequest, out *empty.Empty) error
 		Authenticate(ctx context.Context, in *TokenRequest, out *UserCredentialResponse) error
 	}
 	type Auth struct {
@@ -101,7 +102,7 @@ type authHandler struct {
 	AuthHandler
 }
 
-func (h *authHandler) CreateUserCredential(ctx context.Context, in *UserCredentialRequest, out *UserCredentialResponse) error {
+func (h *authHandler) CreateUserCredential(ctx context.Context, in *UserCredentialRequest, out *empty.Empty) error {
 	return h.AuthHandler.CreateUserCredential(ctx, in, out)
 }
 

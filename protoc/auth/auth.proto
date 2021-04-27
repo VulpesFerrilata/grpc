@@ -1,11 +1,13 @@
 syntax = "proto3";
 
+import "google/protobuf/empty.proto";
+
 option go_package = "protoc/auth";
 
 package auth;
 
 service Auth {
-    rpc CreateUserCredential(UserCredentialRequest) returns (UserCredentialResponse) {}
+    rpc CreateUserCredential(UserCredentialRequest) returns (google.protobuf.Empty) {}
     rpc Authenticate(TokenRequest) returns (UserCredentialResponse) {}
 }
 
