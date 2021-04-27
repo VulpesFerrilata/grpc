@@ -42,7 +42,8 @@ func NewAuthEndpoints() []*api.Endpoint {
 // Client API for Auth service
 
 type AuthService interface {
-	Authenticate(ctx context.Context, in *TokenRequest, opts ...client.CallOption) (*ClaimResponse, error)
+	CreateUserCredential(ctx context.Context, in *CredentialRequest, opts ...client.CallOption) (*UserResponse, error)
+	Authenticate(ctx context.Context, in *TokenRequest, opts ...client.CallOption) (*UserResponse, error)
 }
 
 type authService struct {
@@ -57,9 +58,19 @@ func NewAuthService(name string, c client.Client) AuthService {
 	}
 }
 
-func (c *authService) Authenticate(ctx context.Context, in *TokenRequest, opts ...client.CallOption) (*ClaimResponse, error) {
+func (c *authService) CreateUserCredential(ctx context.Context, in *CredentialRequest, opts ...client.CallOption) (*UserResponse, error) {
+	req := c.c.NewRequest(c.name, "Auth.CreateUserCredential", in)
+	out := new(UserResponse)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *authService) Authenticate(ctx context.Context, in *TokenRequest, opts ...client.CallOption) (*UserResponse, error) {
 	req := c.c.NewRequest(c.name, "Auth.Authenticate", in)
-	out := new(ClaimResponse)
+	out := new(UserResponse)
 	err := c.c.Call(ctx, req, out, opts...)
 	if err != nil {
 		return nil, err
@@ -70,12 +81,14 @@ func (c *authService) Authenticate(ctx context.Context, in *TokenRequest, opts .
 // Server API for Auth service
 
 type AuthHandler interface {
-	Authenticate(context.Context, *TokenRequest, *ClaimResponse) error
+	CreateUserCredential(context.Context, *CredentialRequest, *UserResponse) error
+	Authenticate(context.Context, *TokenRequest, *UserResponse) error
 }
 
 func RegisterAuthHandler(s server.Server, hdlr AuthHandler, opts ...server.HandlerOption) error {
 	type auth interface {
-		Authenticate(ctx context.Context, in *TokenRequest, out *ClaimResponse) error
+		CreateUserCredential(ctx context.Context, in *CredentialRequest, out *UserResponse) error
+		Authenticate(ctx context.Context, in *TokenRequest, out *UserResponse) error
 	}
 	type Auth struct {
 		auth
@@ -88,6 +101,10 @@ type authHandler struct {
 	AuthHandler
 }
 
-func (h *authHandler) Authenticate(ctx context.Context, in *TokenRequest, out *ClaimResponse) error {
+func (h *authHandler) CreateUserCredential(ctx context.Context, in *CredentialRequest, out *UserResponse) error {
+	return h.AuthHandler.CreateUserCredential(ctx, in, out)
+}
+
+func (h *authHandler) Authenticate(ctx context.Context, in *TokenRequest, out *UserResponse) error {
 	return h.AuthHandler.Authenticate(ctx, in, out)
 }

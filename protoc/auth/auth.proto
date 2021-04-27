@@ -5,13 +5,19 @@ option go_package = "protoc/auth";
 package auth;
 
 service Auth {
-    rpc Authenticate(TokenRequest) returns (ClaimResponse) {}
+    rpc CreateUserCredential(CredentialRequest) returns (UserResponse) {}
+    rpc Authenticate(TokenRequest) returns (UserResponse) {}
 }
 
 message TokenRequest {
     string Token = 1;
 }
 
-message ClaimResponse {
+message UserResponse {
     string UserID = 1;
+}
+
+message CredentialRequest {
+    string Username = 1;
+    string Password = 2;
 }

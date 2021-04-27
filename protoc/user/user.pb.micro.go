@@ -43,7 +43,6 @@ func NewUserEndpoints() []*api.Endpoint {
 
 type UserService interface {
 	GetUserById(ctx context.Context, in *UserRequest, opts ...client.CallOption) (*UserResponse, error)
-	GetUserByCredential(ctx context.Context, in *CredentialRequest, opts ...client.CallOption) (*UserResponse, error)
 }
 
 type userService struct {
@@ -68,27 +67,15 @@ func (c *userService) GetUserById(ctx context.Context, in *UserRequest, opts ...
 	return out, nil
 }
 
-func (c *userService) GetUserByCredential(ctx context.Context, in *CredentialRequest, opts ...client.CallOption) (*UserResponse, error) {
-	req := c.c.NewRequest(c.name, "User.GetUserByCredential", in)
-	out := new(UserResponse)
-	err := c.c.Call(ctx, req, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 // Server API for User service
 
 type UserHandler interface {
 	GetUserById(context.Context, *UserRequest, *UserResponse) error
-	GetUserByCredential(context.Context, *CredentialRequest, *UserResponse) error
 }
 
 func RegisterUserHandler(s server.Server, hdlr UserHandler, opts ...server.HandlerOption) error {
 	type user interface {
 		GetUserById(ctx context.Context, in *UserRequest, out *UserResponse) error
-		GetUserByCredential(ctx context.Context, in *CredentialRequest, out *UserResponse) error
 	}
 	type User struct {
 		user
@@ -103,8 +90,4 @@ type userHandler struct {
 
 func (h *userHandler) GetUserById(ctx context.Context, in *UserRequest, out *UserResponse) error {
 	return h.UserHandler.GetUserById(ctx, in, out)
-}
-
-func (h *userHandler) GetUserByCredential(ctx context.Context, in *CredentialRequest, out *UserResponse) error {
-	return h.UserHandler.GetUserByCredential(ctx, in, out)
 }
