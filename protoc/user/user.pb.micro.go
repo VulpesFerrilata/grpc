@@ -42,8 +42,8 @@ func NewUserEndpoints() []*api.Endpoint {
 // Client API for User service
 
 type UserService interface {
-	GetUserById(ctx context.Context, in *GetUserByIdRequest, opts ...client.CallOption) (*UserResponse, error)
-	GetUserByUsername(ctx context.Context, in *GetUserByUsernameRequest, opts ...client.CallOption) (*UserResponse, error)
+	GetUserByID(ctx context.Context, in *UserIDRequest, opts ...client.CallOption) (*UserResponse, error)
+	GetUserByUsername(ctx context.Context, in *UsernameRequest, opts ...client.CallOption) (*UserResponse, error)
 }
 
 type userService struct {
@@ -58,8 +58,8 @@ func NewUserService(name string, c client.Client) UserService {
 	}
 }
 
-func (c *userService) GetUserById(ctx context.Context, in *GetUserByIdRequest, opts ...client.CallOption) (*UserResponse, error) {
-	req := c.c.NewRequest(c.name, "User.GetUserById", in)
+func (c *userService) GetUserByID(ctx context.Context, in *UserIDRequest, opts ...client.CallOption) (*UserResponse, error) {
+	req := c.c.NewRequest(c.name, "User.GetUserByID", in)
 	out := new(UserResponse)
 	err := c.c.Call(ctx, req, out, opts...)
 	if err != nil {
@@ -68,7 +68,7 @@ func (c *userService) GetUserById(ctx context.Context, in *GetUserByIdRequest, o
 	return out, nil
 }
 
-func (c *userService) GetUserByUsername(ctx context.Context, in *GetUserByUsernameRequest, opts ...client.CallOption) (*UserResponse, error) {
+func (c *userService) GetUserByUsername(ctx context.Context, in *UsernameRequest, opts ...client.CallOption) (*UserResponse, error) {
 	req := c.c.NewRequest(c.name, "User.GetUserByUsername", in)
 	out := new(UserResponse)
 	err := c.c.Call(ctx, req, out, opts...)
@@ -81,14 +81,14 @@ func (c *userService) GetUserByUsername(ctx context.Context, in *GetUserByUserna
 // Server API for User service
 
 type UserHandler interface {
-	GetUserById(context.Context, *GetUserByIdRequest, *UserResponse) error
-	GetUserByUsername(context.Context, *GetUserByUsernameRequest, *UserResponse) error
+	GetUserByID(context.Context, *UserIDRequest, *UserResponse) error
+	GetUserByUsername(context.Context, *UsernameRequest, *UserResponse) error
 }
 
 func RegisterUserHandler(s server.Server, hdlr UserHandler, opts ...server.HandlerOption) error {
 	type user interface {
-		GetUserById(ctx context.Context, in *GetUserByIdRequest, out *UserResponse) error
-		GetUserByUsername(ctx context.Context, in *GetUserByUsernameRequest, out *UserResponse) error
+		GetUserByID(ctx context.Context, in *UserIDRequest, out *UserResponse) error
+		GetUserByUsername(ctx context.Context, in *UsernameRequest, out *UserResponse) error
 	}
 	type User struct {
 		user
@@ -101,10 +101,10 @@ type userHandler struct {
 	UserHandler
 }
 
-func (h *userHandler) GetUserById(ctx context.Context, in *GetUserByIdRequest, out *UserResponse) error {
-	return h.UserHandler.GetUserById(ctx, in, out)
+func (h *userHandler) GetUserByID(ctx context.Context, in *UserIDRequest, out *UserResponse) error {
+	return h.UserHandler.GetUserByID(ctx, in, out)
 }
 
-func (h *userHandler) GetUserByUsername(ctx context.Context, in *GetUserByUsernameRequest, out *UserResponse) error {
+func (h *userHandler) GetUserByUsername(ctx context.Context, in *UsernameRequest, out *UserResponse) error {
 	return h.UserHandler.GetUserByUsername(ctx, in, out)
 }
