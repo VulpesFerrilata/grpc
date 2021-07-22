@@ -18,8 +18,9 @@ message ClaimResponse {
 }
 
 message UserCredentialRequest {
-    string UserID = 1;
-    string Password = 2;
+    string ID = 1;
+    string Username = 2;
+    string Password = 3;
 }
 
 message UserCredentialResponse {

@@ -42,8 +42,7 @@ func NewUserEndpoints() []*api.Endpoint {
 // Client API for User service
 
 type UserService interface {
-	GetUserByID(ctx context.Context, in *UserIDRequest, opts ...client.CallOption) (*UserResponse, error)
-	GetUserByUsername(ctx context.Context, in *UsernameRequest, opts ...client.CallOption) (*UserResponse, error)
+	GetUserByID(ctx context.Context, in *UserRequest, opts ...client.CallOption) (*UserResponse, error)
 }
 
 type userService struct {
@@ -58,18 +57,8 @@ func NewUserService(name string, c client.Client) UserService {
 	}
 }
 
-func (c *userService) GetUserByID(ctx context.Context, in *UserIDRequest, opts ...client.CallOption) (*UserResponse, error) {
+func (c *userService) GetUserByID(ctx context.Context, in *UserRequest, opts ...client.CallOption) (*UserResponse, error) {
 	req := c.c.NewRequest(c.name, "User.GetUserByID", in)
-	out := new(UserResponse)
-	err := c.c.Call(ctx, req, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *userService) GetUserByUsername(ctx context.Context, in *UsernameRequest, opts ...client.CallOption) (*UserResponse, error) {
-	req := c.c.NewRequest(c.name, "User.GetUserByUsername", in)
 	out := new(UserResponse)
 	err := c.c.Call(ctx, req, out, opts...)
 	if err != nil {
@@ -81,14 +70,12 @@ func (c *userService) GetUserByUsername(ctx context.Context, in *UsernameRequest
 // Server API for User service
 
 type UserHandler interface {
-	GetUserByID(context.Context, *UserIDRequest, *UserResponse) error
-	GetUserByUsername(context.Context, *UsernameRequest, *UserResponse) error
+	GetUserByID(context.Context, *UserRequest, *UserResponse) error
 }
 
 func RegisterUserHandler(s server.Server, hdlr UserHandler, opts ...server.HandlerOption) error {
 	type user interface {
-		GetUserByID(ctx context.Context, in *UserIDRequest, out *UserResponse) error
-		GetUserByUsername(ctx context.Context, in *UsernameRequest, out *UserResponse) error
+		GetUserByID(ctx context.Context, in *UserRequest, out *UserResponse) error
 	}
 	type User struct {
 		user
@@ -101,10 +88,6 @@ type userHandler struct {
 	UserHandler
 }
 
-func (h *userHandler) GetUserByID(ctx context.Context, in *UserIDRequest, out *UserResponse) error {
+func (h *userHandler) GetUserByID(ctx context.Context, in *UserRequest, out *UserResponse) error {
 	return h.UserHandler.GetUserByID(ctx, in, out)
-}
-
-func (h *userHandler) GetUserByUsername(ctx context.Context, in *UsernameRequest, out *UserResponse) error {
-	return h.UserHandler.GetUserByUsername(ctx, in, out)
 }

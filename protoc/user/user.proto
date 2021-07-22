@@ -5,16 +5,11 @@ option go_package = "protoc/user";
 package user;
 
 service User {
-    rpc GetUserByID(UserIDRequest) returns (UserResponse) {}
-    rpc GetUserByUsername(UsernameRequest) returns (UserResponse) {}
+    rpc GetUserByID(UserRequest) returns (UserResponse) {}
 }
 
-message UserIDRequest {
+message UserRequest {
     string ID = 1;
-}
-
-message UsernameRequest {
-    string Username = 1;
 }
 
 message UserResponse {
